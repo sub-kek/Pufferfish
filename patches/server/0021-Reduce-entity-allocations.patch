@@ -5,11 +5,11 @@ Subject: [PATCH] Reduce entity allocations
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 645a7cfc7f6773a5d79f00edc2f279848101bd6e..bb0b06d2494b6859b3a5a18a049545ae80c12173 100644
+index 84d591cd779b94fd4638867507af6bbd4311e3d3..1499531976261afd48ed16fba875f5fcf1d86a53 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -431,6 +431,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
-     public boolean fixedPose = false; // Paper - Expand Pose API
+@@ -435,6 +435,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+     private final int despawnTime; // Paper - entity despawn time limit
      public boolean activatedPriorityReset = false; // Pufferfish - DAB
      public int activatedPriority = gg.pufferfish.pufferfish.PufferfishConfig.maximumActivationPrio; // Pufferfish - DAB (golf score)
 +    public final BlockPos.MutableBlockPos cachedBlockPos = new BlockPos.MutableBlockPos(); // Pufferfish - reduce entity allocations
@@ -17,7 +17,7 @@ index 645a7cfc7f6773a5d79f00edc2f279848101bd6e..bb0b06d2494b6859b3a5a18a049545ae
      public void setOrigin(@javax.annotation.Nonnull Location location) {
          this.origin = location.toVector();
 diff --git a/src/main/java/net/minecraft/world/entity/ai/attributes/AttributeMap.java b/src/main/java/net/minecraft/world/entity/ai/attributes/AttributeMap.java
-index 69992ebc999ea3ff9e47e4e049bcc514c01150ca..2c9aab24b51d2f0a50100089fe72093b501d383a 100644
+index 94d04a20f97405e02d7cccaabadc7a7e86e336f7..31aa4221de653f0695b21d438964bae20cffad07 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/attributes/AttributeMap.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/attributes/AttributeMap.java
 @@ -23,9 +23,11 @@ public class AttributeMap {

@@ -5,10 +5,10 @@ Subject: [PATCH] TPS catchup
 
 
 diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java b/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
-index 2b80bf0d4c8dfe13d4f091d8c9f9e98b8b03061f..3d918b0adedf6c3054c40b327f03941e75c4b517 100644
+index 309fc4c961d1b6991130076395c0e38d71a4d9dd..b90dd720e02ee50784f4dc29725be74f69c189b4 100644
 --- a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
 +++ b/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
-@@ -188,6 +188,14 @@ public class PufferfishConfig {
+@@ -185,6 +185,14 @@ public class PufferfishConfig {
  				"disabling this option.",
  				"This can be overridden per-player with the permission pufferfish.usebooks");
  	}
@@ -24,19 +24,19 @@ index 2b80bf0d4c8dfe13d4f091d8c9f9e98b8b03061f..3d918b0adedf6c3054c40b327f03941e
  	public static boolean enableSuffocationOptimization;
  	private static void suffocationOptimization() {
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 0495c7bd857db3cb9ab841cfd91ccd806d6f33db..e63721261258dba60b1eef2eee011e0aa18b0fd2 100644
+index c0fc9c924cfeaccf11de308de7f98dfd51a17e45..2299e3be1afe780c8e37475cd0de4f62cdbfbfcc 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1313,6 +1313,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-                 this.profiler.popPush("nextTickWait");
-                 this.mayHaveDelayedTasks = true;
-                 this.delayedTasksMaxNextTickTimeNanos = Math.max(Util.getNanos() + i, this.nextTickTimeNanos);
-+                // Pufferfish start - tps catchup
-+                if (!gg.pufferfish.pufferfish.PufferfishConfig.tpsCatchup) {
-+                    this.nextTickTimeNanos = currentTime + i;
-+                    this.delayedTasksMaxNextTickTimeNanos = nextTickTimeNanos;
-+                }
-+                // Pufferfish end
-                 this.startMeasuringTaskExecutionTime();
-                 this.waitUntilNextTick();
-                 this.finishMeasuringTaskExecutionTime();
+@@ -1341,6 +1341,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                         gameprofilerfiller.popPush("nextTickWait");
+                         this.mayHaveDelayedTasks = true;
+                         this.delayedTasksMaxNextTickTimeNanos = Math.max(Util.getNanos() + i, this.nextTickTimeNanos);
++                        // Pufferfish start - tps catchup
++                        if (!gg.pufferfish.pufferfish.PufferfishConfig.tpsCatchup) {
++                            this.nextTickTimeNanos = currentTime + i;
++                            this.delayedTasksMaxNextTickTimeNanos = nextTickTimeNanos;
++                        }
++                        // Pufferfish end
+                         this.startMeasuringTaskExecutionTime();
+                         this.waitUntilNextTick();
+                         this.finishMeasuringTaskExecutionTime();

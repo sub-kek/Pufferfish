@@ -23,10 +23,10 @@ index 38c3cc8a813322bddee6c74f1c419a7747b741c6..04cc1985b4afd05740934bf639509f44
      public static URI profileWebUrl;
      private static void profilerOptions() {
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index a9387595f64b08ef8297327b666e69fc4948f45a..7c207bd1da82255bf504f9212c08201fe9389f1a 100644
+index 205494d837504c719dafce8eea30c4c92c8fbbd2..237eed7259f0cedf5b96ea54c195c3359d286064 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
-@@ -232,11 +232,13 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
+@@ -235,11 +235,13 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
          return this.lookControl;
      }
  

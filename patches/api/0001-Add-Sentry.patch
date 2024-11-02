@@ -5,10 +5,10 @@ Subject: [PATCH] Add Sentry
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index e7c96be769fde8375b9a1b128cc7ce474144d16d..71257de63352f3f96c90b8ad93a325dca04a1915 100644
+index e29e5024fa693baae469d47fe77b57118f14627c..17049f28c728ec43eacfc191c71f4c77036ca489 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -52,6 +52,7 @@ dependencies {
+@@ -64,6 +64,7 @@ dependencies {
      apiAndDocs("net.kyori:adventure-text-logger-slf4j")
      api("org.apache.logging.log4j:log4j-api:$log4jVersion")
      api("org.slf4j:slf4j-api:$slf4jVersion")
@@ -184,7 +184,7 @@ index 0000000000000000000000000000000000000000..10310fdd53de28efb8a8250f6d3b0c8e
 +	}
 +}
 diff --git a/src/main/java/org/bukkit/plugin/SimplePluginManager.java b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
-index 003bece642b682985625db93cad93026352bfc66..e8ba4f1108f2548a487877027e37d81fc150e042 100644
+index b878e7167cfcdea0e224c182b40abeadd339d3b3..6b6edf9007997d9672e4c850464c1b71cb55f6b4 100644
 --- a/src/main/java/org/bukkit/plugin/SimplePluginManager.java
 +++ b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
 @@ -597,7 +597,9 @@ public final class SimplePluginManager implements PluginManager {

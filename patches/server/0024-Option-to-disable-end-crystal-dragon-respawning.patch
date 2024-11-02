@@ -9,10 +9,10 @@ search to attempt respawning the ender dragon whenever a player places
 an end crystal.
 
 diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java b/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
-index 71c728ff4b1c6a036bc777b7a89ba5e98c6505e7..2b80bf0d4c8dfe13d4f091d8c9f9e98b8b03061f 100644
+index 04cc1985b4afd05740934bf639509f44ddad36e6..309fc4c961d1b6991130076395c0e38d71a4d9dd 100644
 --- a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
 +++ b/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
-@@ -281,6 +281,15 @@ public class PufferfishConfig {
+@@ -261,6 +261,15 @@ public class PufferfishConfig {
  				"This can improve performance by a few percent, but has minor gameplay implications.");
  	}
  
@@ -29,7 +29,7 @@ index 71c728ff4b1c6a036bc777b7a89ba5e98c6505e7..2b80bf0d4c8dfe13d4f091d8c9f9e98b
      private static void profilerOptions() {
          profileWebUrl = URI.create(getString("flare.url", "https://flare.airplane.gg", "Sets the server to use for profiles."));
 diff --git a/src/main/java/net/minecraft/world/item/EndCrystalItem.java b/src/main/java/net/minecraft/world/item/EndCrystalItem.java
-index 5f51e64cb0611a4ba6bdcdcacbcba1063a7f3a5c..cc1e5882bee94864ad189d7f01ce78223411e51d 100644
+index b62db8c7c8c57e43869ee239ebf4b02f112355d9..2bee342e59e600426c8681a3ce641a12f22790be 100644
 --- a/src/main/java/net/minecraft/world/item/EndCrystalItem.java
 +++ b/src/main/java/net/minecraft/world/item/EndCrystalItem.java
 @@ -57,7 +57,7 @@ public class EndCrystalItem extends Item {
