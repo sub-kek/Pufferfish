@@ -80,13 +80,13 @@ index fdcb62d12164024a5f354d60cc863821a18d1b2a..00000000000000000000000000000000
 -
 -}
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 663b4ecd520e82aa108d44f2d5c2a20cfc7bc01f..6c865c92bd1d80921796ce46012f68d7e51b4f74 100644
+index c26e3a239441376f2694782d4f07943538677c71..230e878981f43428af3444badcd2012033348ebb 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -333,6 +333,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      public volatile boolean abnormalExit = false; // Paper
      public static final long SERVER_INIT = System.nanoTime(); // Paper - Lag compensation
-     private List<String> pluginsBlockingSleep = new ArrayList<>(); // Paper - API to allow/disallow tick sleeping
+     private final Set<String> pluginsBlockingSleep = new java.util.HashSet<>(); // Paper - API to allow/disallow tick sleeping
 +    public gg.pufferfish.pufferfish.util.AsyncExecutor mobSpawnExecutor = new gg.pufferfish.pufferfish.util.AsyncExecutor("MobSpawning"); // Pufferfish - optimize mob spawning
  
      public static <S extends MinecraftServer> S spin(Function<Thread, S> serverFactory) {
@@ -104,7 +104,7 @@ index b2b5c793ede667e03581492af92943a729a33ae7..d62f7375394409a278bc565c8263506c
          }
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 61a73a234d9bdd22958ae261b7d0359179f7a57b..b76fb368dfd7c7e1076b964a7e9e9c62667b038f 100644
+index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a74e8d60d 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -176,6 +176,9 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon

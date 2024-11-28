@@ -84,7 +84,7 @@ index dbb62c3027a8a2d6f776948291a78b5d1813709b..210f4c1d59758f76585fb04795e8986e
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index e499cb6601edff442212cc135e41871fca829ea3..d3b12cddc192c5d823834fae808fed85e29f750a 100644
+index a8a1f5fc3514078b9a22b09cb0b91ea836ed0e9c..ce4b807adc0f0e7c8451793288b4a2a84c25e8fc 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -792,6 +792,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -96,10 +96,10 @@ index e499cb6601edff442212cc135e41871fca829ea3..d3b12cddc192c5d823834fae808fed85
                      if (!tickratemanager.isEntityFrozen(entity)) {
                          gameprofilerfiller.push("checkDespawn");
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index ed5b00620527c1776722d25b1b45f1544802a341..84d591cd779b94fd4638867507af6bbd4311e3d3 100644
+index a15546e433ebba6c0de01bdaaef201a3d99a87b5..9277aa442f371117886716f6ee5aa474b6578387 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -433,6 +433,8 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -389,6 +389,8 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      public boolean freezeLocked = false; // Paper - Freeze Tick Lock API
      public boolean fixedPose = false; // Paper - Expand Pose API
      private final int despawnTime; // Paper - entity despawn time limit
