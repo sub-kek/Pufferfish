@@ -16,6 +16,55 @@ this can result in performance gains of up to 15%, which is significant
 and, in my opinion, worth the low risk of minor mob-spawning-related
 inconsistencies.
 
+diff --git a/src/main/java/ca/spottedleaf/moonrise/common/list/IteratorSafeOrderedReferenceSet.java b/src/main/java/ca/spottedleaf/moonrise/common/list/IteratorSafeOrderedReferenceSet.java
+index c21e00812f1aaa1279834a0562d360d6b89e146c..877d2095a066854939f260ca4b0b8c7b5abb620f 100644
+--- a/src/main/java/ca/spottedleaf/moonrise/common/list/IteratorSafeOrderedReferenceSet.java
++++ b/src/main/java/ca/spottedleaf/moonrise/common/list/IteratorSafeOrderedReferenceSet.java
+@@ -18,7 +18,7 @@ public final class IteratorSafeOrderedReferenceSet<E> {
+ 
+     private final double maxFragFactor;
+ 
+-    private int iteratorCount;
++    private final java.util.concurrent.atomic.AtomicInteger iteratorCount = new java.util.concurrent.atomic.AtomicInteger(); // Pufferfish - async mob spawning
+ 
+     public IteratorSafeOrderedReferenceSet() {
+         this(16, 0.75f, 16, 0.2);
+@@ -79,7 +79,7 @@ public final class IteratorSafeOrderedReferenceSet<E> {
+     }
+ 
+     public int createRawIterator() {
+-        ++this.iteratorCount;
++        this.iteratorCount.incrementAndGet(); // Pufferfish - async mob spawning
+         if (this.indexMap.isEmpty()) {
+             return -1;
+         } else {
+@@ -100,7 +100,7 @@ public final class IteratorSafeOrderedReferenceSet<E> {
+     }
+ 
+     public void finishRawIterator() {
+-        if (--this.iteratorCount == 0) {
++        if (this.iteratorCount.decrementAndGet() == 0) { // Pufferfish - async mob spawning
+             if (this.getFragFactor() >= this.maxFragFactor) {
+                 this.defrag();
+             }
+@@ -117,7 +117,7 @@ public final class IteratorSafeOrderedReferenceSet<E> {
+                 throw new IllegalStateException();
+             }
+             this.listElements[index] = null;
+-            if (this.iteratorCount == 0 && this.getFragFactor() >= this.maxFragFactor) {
++            if (this.iteratorCount.get() == 0 && this.getFragFactor() >= this.maxFragFactor) { // Pufferfish - async mob spawning
+                 this.defrag();
+             }
+             //this.check();
+@@ -219,7 +219,7 @@ public final class IteratorSafeOrderedReferenceSet<E> {
+     }
+ 
+     public IteratorSafeOrderedReferenceSet.Iterator<E> iterator(final int flags) {
+-        ++this.iteratorCount;
++        this.iteratorCount.incrementAndGet(); // Pufferfish - async mob spawning
+         return new BaseIterator<>(this, true, (flags & ITERATOR_FLAG_SEE_ADDITIONS) != 0 ? Integer.MAX_VALUE : this.listSize);
+     }
+ 
 diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java b/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
 index a047bcbb9aa47d094f3daeed6708b1918b4904de..79252f567ab2b92c6c4e7f40437c94f7cb525ee7 100644
 --- a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
@@ -117,7 +166,7 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
      public ServerChunkCache(ServerLevel world, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor workerExecutor, ChunkGenerator chunkGenerator, int viewDistance, int simulationDistance, boolean dsync, ChunkProgressListener worldGenerationProgressListener, ChunkStatusUpdateListener chunkStatusChangeListener, Supplier<DimensionDataStorage> persistentStateManagerFactory) {
          this.level = world;
          this.mainThreadProcessor = new ServerChunkCache.MainThreadExecutor(world);
-@@ -504,6 +507,40 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -504,6 +507,43 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
              this.broadcastChangedChunks(gameprofilerfiller);
              gameprofilerfiller.pop();
          }
@@ -146,10 +195,13 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
 +                    int mapped = distanceManager.getNaturalSpawnChunkCount();
 +                    ca.spottedleaf.moonrise.common.list.IteratorSafeOrderedReferenceSet.Iterator<Entity> objectiterator =
 +                            level.entityTickList.entities.iterator(ca.spottedleaf.moonrise.common.list.IteratorSafeOrderedReferenceSet.ITERATOR_FLAG_SEE_ADDITIONS);
-+                    gg.pufferfish.pufferfish.util.IterableWrapper<Entity> wrappedIterator =
-+                            new gg.pufferfish.pufferfish.util.IterableWrapper<>(objectiterator);
-+                    lastSpawnState = NaturalSpawner.createState(mapped, wrappedIterator, this::getFullChunk, null, true);
-+                    objectiterator.finishedIterating();
++                    try {
++                        gg.pufferfish.pufferfish.util.IterableWrapper<Entity> wrappedIterator =
++                                new gg.pufferfish.pufferfish.util.IterableWrapper<>(objectiterator);
++                        lastSpawnState = NaturalSpawner.createState(mapped, wrappedIterator, this::getFullChunk, null, true);
++                    } finally {
++                        objectiterator.finishedIterating();
++                    }
 +                    _pufferfish_spawnCountsReady.set(true);
 +                });
 +            }
@@ -158,7 +210,7 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
      }
  
      private void broadcastChangedChunks(ProfilerFiller profiler) {
-@@ -553,6 +590,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -553,6 +593,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
          final int naturalSpawnChunkCount = j;
          NaturalSpawner.SpawnState spawnercreature_d; // moved down
          if ((this.spawnFriendlies || this.spawnEnemies) && this.level.paperConfig().entities.spawning.perPlayerMobSpawns) { // don't count mobs when animals and monsters are disabled
@@ -166,7 +218,7 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
              // re-set mob counts
              for (ServerPlayer player : this.level.players) {
                  // Paper start - per player mob spawning backoff
-@@ -567,13 +605,17 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -567,13 +608,17 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
                  }
                  // Paper end - per player mob spawning backoff
              }
@@ -187,7 +239,7 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
          profiler.popPush("spawnAndTick");
          boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING) && !this.level.players().isEmpty(); // CraftBukkit
          int k = this.level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
-@@ -591,7 +633,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -591,7 +636,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
              // Paper end - PlayerNaturallySpawnCreaturesEvent
              boolean flag1 = this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) != 0L && this.level.getLevelData().getGameTime() % this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) == 0L; // CraftBukkit
  
@@ -196,7 +248,7 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
          } else {
              list1 = List.of();
          }
-@@ -603,8 +645,8 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -603,8 +648,8 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
              ChunkPos chunkcoordintpair = chunk.getPos();
  
              chunk.incrementInhabitedTime(timeDelta);
