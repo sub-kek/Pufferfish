@@ -129,7 +129,7 @@ index fdcb62d12164024a5f354d60cc863821a18d1b2a..00000000000000000000000000000000
 -
 -}
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c26e3a239441376f2694782d4f07943538677c71..230e878981f43428af3444badcd2012033348ebb 100644
+index 780582ebaa8deb0c0b0c8de17de5abcebafa4bd3..dad3ea31ebfa8b215d62bebf6f601ef01a6ff393 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -333,6 +333,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -153,7 +153,7 @@ index b2b5c793ede667e03581492af92943a729a33ae7..d62f7375394409a278bc565c8263506c
          }
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a74e8d60d 100644
+index d021cd5b6136f0125076513977f430c6d4dd4f9f..1cb8c9d21eef27492efc4995525c198cbffd4b9b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -176,6 +176,9 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
@@ -239,7 +239,7 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
          profiler.popPush("spawnAndTick");
          boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING) && !this.level.players().isEmpty(); // CraftBukkit
          int k = this.level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
-@@ -591,7 +636,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -590,7 +635,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
              // Paper end - PlayerNaturallySpawnCreaturesEvent
              boolean flag1 = this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) != 0L && this.level.getLevelData().getGameTime() % this.level.ticksPerSpawnCategory.getLong(org.bukkit.entity.SpawnCategory.ANIMAL) == 0L; // CraftBukkit
  
@@ -248,7 +248,7 @@ index 82110c9af65479a918ba519e197ba880f5fcc24d..13772ccb33087bf0dfe714be55ff3b5a
          } else {
              list1 = List.of();
          }
-@@ -603,8 +648,8 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -602,8 +647,8 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
              ChunkPos chunkcoordintpair = chunk.getPos();
  
              chunk.incrementInhabitedTime(timeDelta);
