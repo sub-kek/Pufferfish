@@ -84,7 +84,7 @@ index dbb62c3027a8a2d6f776948291a78b5d1813709b..210f4c1d59758f76585fb04795e8986e
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index a8a1f5fc3514078b9a22b09cb0b91ea836ed0e9c..ce4b807adc0f0e7c8451793288b4a2a84c25e8fc 100644
+index 6db67228707fb6c9e894cf974925718d0e06fbbb..b32b28ac0cbe4a191a3a46cca72326a60ee8df96 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -792,6 +792,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -284,21 +284,22 @@ index 76aca47d8638d5c37c57d3a59fa7f8ceaa5a53b4..fb92cd4b0c15b614c0c06d2867039aee
          gameprofilerfiller.pop();
          gameprofilerfiller.push("goatActivityUpdate");
 diff --git a/src/main/java/net/minecraft/world/entity/monster/hoglin/Hoglin.java b/src/main/java/net/minecraft/world/entity/monster/hoglin/Hoglin.java
-index 6ea90e54759dbeab025e0a1896ee834ea9986427..3f625cb9b1237ca8f782bca2f182dfe72853bd96 100644
+index 92270912ef26924f611a1df7cb3d5b485b0a262d..9c20651b74157582e60793ceba8adde2c354f2a8 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/hoglin/Hoglin.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/hoglin/Hoglin.java
-@@ -156,10 +156,12 @@ public class Hoglin extends Animal implements Enemy, HoglinBase {
-         return (Brain<Hoglin>)super.getBrain();
+@@ -138,11 +138,13 @@ public class Hoglin extends Animal implements Enemy, HoglinBase {
+         return (Brain<Hoglin>) super.getBrain(); // CraftBukkit - decompile error
      }
  
 +    private int behaviorTick; // Pufferfish
      @Override
      protected void customServerAiStep(ServerLevel world) {
-         ProfilerFiller profilerFiller = Profiler.get();
-         profilerFiller.push("hoglinBrain");
+         ProfilerFiller gameprofilerfiller = Profiler.get();
+ 
+         gameprofilerfiller.push("hoglinBrain");
 +        if (this.behaviorTick++ % this.activatedPriority == 0) // Pufferfish
          this.getBrain().tick(world, this);
-         profilerFiller.pop();
+         gameprofilerfiller.pop();
          HoglinAi.updateActivity(this);
 diff --git a/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java b/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java
 index e04d2c5e75dc774fe893a552474fdb8045c32693..d1870bf4c01c846a721480eb6611a67db9b98d02 100644
