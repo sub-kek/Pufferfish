@@ -8,7 +8,7 @@ and API spec stability is NOT guaranteed. If you use this in plugins,
 they WILL break eventually.
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 17049f28c728ec43eacfc191c71f4c77036ca489..aae422978887a0f2cf531b2dc862705148569676 100644
+index 17049f28c728ec43eacfc191c71f4c77036ca489..4166340a90ba03d8ad25b943b868b92446ee21e8 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -149,6 +149,13 @@ val generateApiVersioningFile by tasks.registering {
@@ -25,6 +25,14 @@ index 17049f28c728ec43eacfc191c71f4c77036ca489..aae422978887a0f2cf531b2dc8627051
  tasks.jar {
      from(generateApiVersioningFile.map { it.outputs.files.singleFile }) {
          into("META-INF/maven/${project.group}/${project.name}")
+@@ -162,6 +169,7 @@ tasks.jar {
+ 
+ tasks.withType<Javadoc> {
+     val options = options as StandardJavadocDocletOptions
++    options.addStringOption("-add-modules", "jdk.incubator.vector") // Pufferfish
+     options.overview = "src/main/javadoc/overview.html"
+     options.use()
+     options.isDocFilesSubDirs = true
 diff --git a/src/main/java/gg/pufferfish/pufferfish/simd/SIMDChecker.java b/src/main/java/gg/pufferfish/pufferfish/simd/SIMDChecker.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..3441cdad70da1bd523c5933b1a914688718c2657
